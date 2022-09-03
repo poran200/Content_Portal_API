@@ -60,7 +60,7 @@ public class BatchConfiguration {
     @Bean
     public Step giftCardImportStep(GiftCardInvoiceWriterListener writerListener,MongoItemWriter<GiftCardInvoice> itemWriter){
         return stepBuilderFactory.get("giftCardImportStep")
-                .<GiftCardInvoice,GiftCardInvoice>chunk(5)
+                .<GiftCardInvoice,GiftCardInvoice>chunk(1000)
                 .reader(itemReader())
                 .writer(itemWriter)
                 .listener(writerListener)
