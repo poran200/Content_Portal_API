@@ -2,19 +2,17 @@ package com.gft.manager.support.poi;
 
 import com.monitorjbl.xlsx.StreamingReader;
 import lombok.extern.log4j.Log4j2;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.commons.lang3.time.StopWatch;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.*;
 
 @Log4j2
 public abstract class AbstractExcelPoi<T> {
@@ -24,6 +22,43 @@ public abstract class AbstractExcelPoi<T> {
     public List<T> read(String filePath, final RowMapper<T> rowMapper) throws ExcleFileException {
         log.info("File Read start..........");
         List<T> tList = new ArrayList<>();
+        StopWatch stopWatch = StopWatch.create();
+        ExecutorService service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        try {
+            stopWatch.start();
+            Future<List<T>> listFuture = service.submit(() -> readFile(filePath, rowMapper, tList));
+            stopWatch.stop();
+            log.info("Total Time Taken To read File : {}",stopWatch.getTime(TimeUnit.SECONDS));
+            return listFuture.get();
+
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            service.shutdownNow();
+        }
+
+
+//    private Workbook getWorkBook(String filePath) throws ExcleFileException {
+//        Workbook workbook;
+//        try {
+//            try (FileInputStream inputStream = new FileInputStream(new File(filePath))) {
+//                if (filePath.endsWith("xlsx")) {
+//                    workbook = WorkbookFactory.create(inputStream);
+//                } else {
+//                    throw new ExcleFileException(" The specified file is not excel file");
+//                }
+//            }
+//        } catch (IOException e) {
+//            throw new ExcleFileException(" The specified file is not excel file");
+//        }
+//
+//        return workbook;
+//    }
+    }
+
+    private List<T> readFile(String filePath, RowMapper<T> rowMapper, List<T> tList) {
         try (FileInputStream inputStream = new FileInputStream(filePath)) {
             try (Workbook workbook = StreamingReader.builder()
                     .rowCacheSize(200)
@@ -41,7 +76,6 @@ public abstract class AbstractExcelPoi<T> {
 
                 });
                 log.info("File Rad End .............");
-                return tList;
 
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
@@ -71,22 +105,7 @@ public abstract class AbstractExcelPoi<T> {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-//    private Workbook getWorkBook(String filePath) throws ExcleFileException {
-//        Workbook workbook;
-//        try {
-//            try (FileInputStream inputStream = new FileInputStream(new File(filePath))) {
-//                if (filePath.endsWith("xlsx")) {
-//                    workbook = WorkbookFactory.create(inputStream);
-//                } else {
-//                    throw new ExcleFileException(" The specified file is not excel file");
-//                }
-//            }
-//        } catch (IOException e) {
-//            throw new ExcleFileException(" The specified file is not excel file");
-//        }
-//
-//        return workbook;
-//    }
+        return tList;
     }
+
 }
