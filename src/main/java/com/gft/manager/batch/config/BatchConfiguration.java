@@ -58,12 +58,11 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Step giftCardImportStep(GiftCardInvoiceWriterListener writerListener,MongoItemWriter<GiftCardInvoice> itemWriter){
+    public Step giftCardImportStep(MongoItemWriter<GiftCardInvoice> itemWriter){
         return stepBuilderFactory.get("giftCardImportStep")
                 .<GiftCardInvoice,GiftCardInvoice>chunk(1000)
                 .reader(itemReader())
                 .writer(itemWriter)
-                .listener(writerListener)
                 .build();
 
     }

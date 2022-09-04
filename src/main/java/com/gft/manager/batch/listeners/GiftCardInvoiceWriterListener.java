@@ -2,12 +2,15 @@ package com.gft.manager.batch.listeners;
 
 import com.gft.manager.model.gft.GiftCardInvoice;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.ItemReadListener;
+import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.stereotype.Component;
 
 @Log4j2
 @Component
-public class GiftCardInvoiceWriterListener implements ItemReadListener<GiftCardInvoice> {
+public class GiftCardInvoiceWriterListener implements ItemReadListener<GiftCardInvoice>, StepExecutionListener {
 
     @Override
     public void beforeRead() {
@@ -23,5 +26,15 @@ public class GiftCardInvoiceWriterListener implements ItemReadListener<GiftCardI
     @Override
     public void onReadError(Exception e) {
         log.error(" Excepting hapen on write: {}",e.getMessage());
+    }
+
+    @Override
+    public void beforeStep(StepExecution stepExecution) {
+
+    }
+
+    @Override
+    public ExitStatus afterStep(StepExecution stepExecution) {
+        return null;
     }
 }

@@ -21,23 +21,19 @@ public abstract class AbstractExcelPoi<T> {
 
     public List<T> read(String filePath, final RowMapper<T> rowMapper) throws ExcleFileException {
         log.info("File Read start..........");
-        List<T> tList = new ArrayList<>();
+       final List<T> tList = new ArrayList<>();
         StopWatch stopWatch = StopWatch.create();
-        ExecutorService service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        try {
-            stopWatch.start();
-            Future<List<T>> listFuture = service.submit(() -> readFile(filePath, rowMapper, tList));
-            stopWatch.stop();
-            log.info("Total Time Taken To read File : {}",stopWatch.getTime(TimeUnit.SECONDS));
-            return listFuture.get();
+//        ExecutorService service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        stopWatch.start();
 
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } finally {
-            service.shutdownNow();
-        }
+//            Future<List<T>> listFuture = service.submit(() -> readFile(filePath, rowMapper, tList));
+
+
+        List<T> list = readFile(filePath,rowMapper,tList);
+        stopWatch.stop();
+
+        log.info("Total Time Taken To read File : {}s",stopWatch.getTime(TimeUnit.SECONDS));
+        return list;
 
 
 //    private Workbook getWorkBook(String filePath) throws ExcleFileException {
