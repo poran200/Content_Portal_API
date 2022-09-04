@@ -193,7 +193,13 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.11.0</version>
+        </dependency><!-- https://mvnrepository.com/artifact/org.springframework.batch.extensions/spring-batch-excel -->
+        <dependency>
+            <groupId>org.springframework.batch.extensions</groupId>
+            <artifactId>spring-batch-excel</artifactId>
+            <version>0.1.1</version>
         </dependency>
+
         <dependency>
             <groupId>com.monitorjbl</groupId>
             <artifactId>xlsx-streamer</artifactId>

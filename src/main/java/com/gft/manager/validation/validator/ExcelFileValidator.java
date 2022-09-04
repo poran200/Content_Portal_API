@@ -9,7 +9,7 @@ public class ExcelFileValidator {
     private  Matcher matcher;
 
     private static final String IMAGE_PATTERN =
-            "(.*/)*.+\\.(xlsx)$";
+            "(.*/)*.+\\.(xlsx|csv)$";
 
     public ExcelFileValidator(){
         pattern = Pattern.compile(IMAGE_PATTERN);

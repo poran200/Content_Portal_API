@@ -55,7 +55,7 @@ public class FileStorageService {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         if (!validator.validate(fileName)){
            return ResponseBuilder.getFailureResponse(HttpStatus.BAD_REQUEST,
-                   "file is not support only allow[“.xlsx”]");
+                   "file is not support only allow[“.csv”,“.xlsx”]");
         }
         String finalReplace = replaceFileName(file);
 
@@ -69,7 +69,7 @@ public class FileStorageService {
             Path targetLocation = this.fileStorageLocation.resolve(finalReplace);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            return ResponseBuilder.getSuccessResponse(HttpStatus.CREATED,"file save successfully",finalReplace);
+            return ResponseBuilder.getSuccessResponse(HttpStatus.CREATED,"file save successfully",targetLocation);
         } catch (IOException ex) {
             return ResponseBuilder.getFailureResponse(HttpStatus.BAD_REQUEST,"Could not store file " + fileName + ". Please try again!");
 //            throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.FileSystemException;
+import java.nio.file.Path;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +21,7 @@ public class FileUploadService {
     public Response uploadFile(MultipartFile file) throws JobInstanceAlreadyCompleteException, FileSystemException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
         Response response = fileStorageService.storeFile(file);
         if (response.getStatusCode() == 201){
-            String filePath = (String) response.getContent();
+            Path filePath = (Path) response.getContent();
             jobLauncherService.lunchGiftCardImportJob(filePath);
         }
         return response;

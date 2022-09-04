@@ -1,18 +1,21 @@
 package com.gft.manager.batch.reader;
 
 import com.gft.manager.batch.BatchUtil;
-import com.gft.manager.batch.mappers.GiftCardInvoiceRowMapper;
 import com.gft.manager.model.gft.GiftCardInvoice;
 import com.gft.manager.service.impl.FileStorageService;
-import com.gft.manager.support.poi.AbstractExcelPoi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.apache.poi.ss.formula.eval.NotImplementedException;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
-import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.extensions.excel.RowMapper;
+import org.springframework.batch.extensions.excel.mapping.BeanWrapperRowMapper;
+import org.springframework.batch.extensions.excel.streaming.StreamingXlsxItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -22,7 +25,8 @@ import java.util.List;
 @Component
 @Log4j2
 @RequiredArgsConstructor
-public class GiftCardInvoiceItemReader extends AbstractExcelPoi<GiftCardInvoice> implements ItemReader<GiftCardInvoice>, StepExecutionListener {
+@StepScope
+public class GiftCardInvoiceItemReader extends StreamingXlsxItemReader<GiftCardInvoice> implements StepExecutionListener {
     @Autowired
     private FileStorageService fileStorageService;
     private String exclefilePath;
@@ -30,10 +34,17 @@ public class GiftCardInvoiceItemReader extends AbstractExcelPoi<GiftCardInvoice>
     private List<GiftCardInvoice> giftCardInvoices = new LinkedList<>();
 
     @Override
-    public void write(String filePath, List<GiftCardInvoice> aList) {
-        throw new NotImplementedException("No need to implement this method in the context");
+    public void setResource(Resource resource) {
+        try {
+            super.setResource(new FileSystemResource(fileStorageService.loadFileAsResource(exclefilePath).getFile().getPath()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
     }
+
+
+
 
 
     @Override
@@ -46,17 +57,7 @@ public class GiftCardInvoiceItemReader extends AbstractExcelPoi<GiftCardInvoice>
         return null;
     }
 
-    @Override
-    public GiftCardInvoice read() throws IOException {
 
-        if (this.giftCardInvoices.isEmpty()) {
-            log.info("Read the file ");
-            String path = fileStorageService.loadFileAsResource(exclefilePath).getFile().getPath();
-            this.giftCardInvoices = read(path, new GiftCardInvoiceRowMapper());
-        }
-        return getGiftCardInvoice();
-
-    }
 
     private GiftCardInvoice getGiftCardInvoice() {
         GiftCardInvoice invoice = null;

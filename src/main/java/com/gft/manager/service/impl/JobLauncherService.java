@@ -16,6 +16,7 @@ import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.FileSystemException;
+import java.nio.file.Path;
 import java.util.Date;
 
 @Service
@@ -28,18 +29,18 @@ public class JobLauncherService {
 
 
 
-    void lunchGiftCardImportJob(String filePath) throws FileSystemException, JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
+    void lunchGiftCardImportJob(Path filePath) throws FileSystemException, JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
         log.info("Starting Job....");
-        if (Strings.isBlank(filePath)){
+        if (Strings.isBlank(filePath.getFileName().toString())){
             log.warn("file path cannot be empty");
             throw new FileSystemException(" file path cannot be empty");
         }
-        JobParameters parameters = new JobParametersBuilder()
+        JobParameters jobParameters = new JobParametersBuilder()
                 .addLong(BatchUtil.JOB_ID_KEY, System.currentTimeMillis())
                 .addDate("currentTime", new Date())
-                .addString(BatchUtil.EXCEL_PATH_KEY, filePath)
+                .addString(BatchUtil.EXCEL_PATH_KEY,filePath.toAbsolutePath().normalize().toString())
                 .toJobParameters();
-        jobLauncher.run(job,parameters);
+        jobLauncher.run(job,jobParameters);
 
         log.info("Stopping job");
 

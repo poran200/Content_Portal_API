@@ -2,11 +2,11 @@ package com.gft.manager.batch.mappers;
 
 import com.gft.manager.model.gft.GiftCardInvoice;
 import com.gft.manager.support.poi.CellFactory;
-import com.gft.manager.support.poi.RowMapper;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
+import org.springframework.batch.extensions.excel.RowMapper;
+import org.springframework.batch.extensions.excel.support.rowset.RowSet;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.List;
 import static com.gft.manager.batch.BatchUtil.getUniqeInvoiceNo;
 @Log4j2
 public class GiftCardInvoiceRowMapper extends CellFactory implements RowMapper<GiftCardInvoice> {
-    @Override
+
     public GiftCardInvoice transformerRow(Row row) {
         return GiftCardInvoice.builder()
                 .invoiceNo((String) getCellValue(row.getCell(0)))
@@ -50,7 +50,6 @@ public class GiftCardInvoiceRowMapper extends CellFactory implements RowMapper<G
 
     }
 
-    @Override
     public List<GiftCardInvoice> transformerRowList(Row row) throws ParseException {
         List<GiftCardInvoice> list = new ArrayList<>();
         Double quantity = (Double)getCellValue(row.getCell(8));
@@ -69,4 +68,13 @@ public class GiftCardInvoiceRowMapper extends CellFactory implements RowMapper<G
     }
 
 
+    @Override
+    public GiftCardInvoice mapRow(RowSet rowSet) throws Exception {
+
+        String[] currentRow = rowSet.getCurrentRow();
+       return GiftCardInvoice.builder()
+                .invoiceNo(currentRow[0])
+                .build();
+
+    }
 }
