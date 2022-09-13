@@ -1,16 +1,13 @@
 package com.gft.manager.batch.config;
 
-import com.gft.manager.batch.BatchUtil;
 import com.gft.manager.batch.listeners.JobCompletionListener;
-import com.gft.manager.batch.mappers.GiftCardInvoiceRowMapper;
-import com.gft.manager.batch.reader.GiftCardInvoiceItemReader;
+import com.gft.manager.batch.processor.GiftCardInvoiceProcessor;
 import com.gft.manager.batch.validators.GiftCardJobParameterValidator;
 import com.gft.manager.model.gft.GiftCardInvoice;
-import com.monitorjbl.xlsx.StreamingReader;
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.hibernate.boot.archive.internal.FileInputStreamAccess;
-import org.springframework.batch.core.*;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParametersValidator;
+import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -18,32 +15,20 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.CompositeJobParametersValidator;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.extensions.excel.mapping.BeanWrapperRowMapper;
-import org.springframework.batch.extensions.excel.streaming.StreamingXlsxItemReader;
-import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.batch.item.data.builder.MongoItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
-import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
-import org.springframework.batch.item.file.transform.FieldSet;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.validation.BindException;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 
 
@@ -54,6 +39,7 @@ public class BatchConfiguration {
     public static final String GIFT_CARD_INVOICE = "giftCardInvoice";
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
+    private final GiftCardInvoiceProcessor invoiceProcessor;
 
 
     @Bean
@@ -68,6 +54,7 @@ public class BatchConfiguration {
         bean.setValidators(Collections.singletonList(jobParametersValidator()));
         return bean;
     }
+
 
     @Bean
     @StepScope
@@ -93,7 +80,7 @@ public class BatchConfiguration {
                         .build()
                 )
                 .linesToSkip(1)
-                .build();
+                 .build();
     }
 
     @Bean
@@ -111,6 +98,7 @@ public class BatchConfiguration {
         return stepBuilderFactory.get("giftCardImportStep")
                 .<GiftCardInvoice, GiftCardInvoice>chunk(1000)
                 .reader(itemReader(null))
+                .processor(invoiceProcessor)
                 .writer(itemWriter)
                 .taskExecutor(taskExecutor())
                 .build();

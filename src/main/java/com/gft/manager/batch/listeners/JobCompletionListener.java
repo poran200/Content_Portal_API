@@ -28,7 +28,7 @@ public class JobCompletionListener extends JobExecutionListenerSupport {
         if (jobExecution.getStatus() == BatchStatus.COMPLETED){
             log.info("==========JOB FINISHED=======");
             log.info("JobId      : {}",jobId);
-            log.info("excel Path      : {}",filePath);
+            log.info("file Path      : {}",filePath);
             log.info("Start Date: {}", createTime);
             log.info("End Date: {}", endTime);
             log.info("==============================");
