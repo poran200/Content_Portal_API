@@ -12,14 +12,14 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.gft.manager.batch.BatchUtil.getUniqeInvoiceNo;
+import static com.gft.manager.batch.BatchUtil.getUniqueInvoiceNo;
 @Log4j2
 public class GiftCardInvoiceRowMapper extends CellFactory implements RowMapper<GiftCardInvoice> {
 
     public GiftCardInvoice transformerRow(Row row) {
         return GiftCardInvoice.builder()
                 .invoiceNo((String) getCellValue(row.getCell(0)))
-                .uniqueInvoiceNo(getUniqeInvoiceNo())
+                .uniqueInvoiceNo(getUniqueInvoiceNo())
                 .orderDate((String) getCellValue(row.getCell(2)))
                 .orderTime((String) getCellValue(row.getCell(3)))
                 .customerId((String) getCellValue(row.getCell(4)))

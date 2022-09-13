@@ -8,7 +8,7 @@ public  class BatchUtil {
 
     public static final String   JOB_ID_KEY = "jobId";
     public static final String EXCEL_PATH_KEY = "excelPath";
-    public static String getUniqeInvoiceNo() {
+    public static String getUniqueInvoiceNo() {
         Date date = Date.from(Instant.now());
         return "GFT"+date.getYear()+date.getSeconds()+getRandomNumber();
     }
