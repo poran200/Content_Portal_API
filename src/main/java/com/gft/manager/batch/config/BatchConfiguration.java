@@ -1,10 +1,13 @@
 package com.gft.manager.batch.config;
 
+import com.gft.manager.batch.listeners.GiftCardInvoiceItemReaderListener;
 import com.gft.manager.batch.listeners.JobCompletionListener;
 import com.gft.manager.batch.processor.GiftCardInvoiceProcessor;
+import com.gft.manager.batch.reader.GiftCardInvoiceItemReader;
 import com.gft.manager.batch.validators.GiftCardJobParameterValidator;
 import com.gft.manager.model.gft.GiftCardInvoice;
 import lombok.RequiredArgsConstructor;
+import org.springframework.batch.core.ItemReadListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersValidator;
 import org.springframework.batch.core.Step;
@@ -18,6 +21,7 @@ import org.springframework.batch.extensions.excel.mapping.BeanWrapperRowMapper;
 import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.batch.item.data.builder.MongoItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.LineCallbackHandler;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Value;
@@ -77,8 +81,7 @@ public class BatchConfiguration {
                         .actualPrice(fieldSet.readDouble(10))
                         .from(fieldSet.readString(11))
                         .validityMonth(fieldSet.readInt(12))
-                        .build()
-                )
+                        .build())
                 .linesToSkip(1)
                  .build();
     }
@@ -98,6 +101,7 @@ public class BatchConfiguration {
         return stepBuilderFactory.get("giftCardImportStep")
                 .<GiftCardInvoice, GiftCardInvoice>chunk(1000)
                 .reader(itemReader(null))
+                .listener(new GiftCardInvoiceItemReaderListener())
                 .processor(invoiceProcessor)
                 .writer(itemWriter)
                 .taskExecutor(taskExecutor())

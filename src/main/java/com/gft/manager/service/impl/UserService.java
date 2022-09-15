@@ -182,21 +182,7 @@ public class UserService {
 
 
     }
-    public Response findAllReviewersWithDetailsBySearchKey(String key){
-        var userResponseDtoList = userPaginationRepertory.findAllByUsernameStartingWithOrEmailStartingWithOrFullNameStartingWith(key,key,key, PageRequest.of(0, 15))
-                .stream().filter(User::isReviewer)
-                .map(user -> modelMapper.map(user, ReviewerResponseDto.class)).collect(toList());
-        return getSuccessResponseList(HttpStatus.OK,"reviewer list",userResponseDtoList,userResponseDtoList.size());
-    }
-    public Response finAllInfluencersByUserName(String key){
 
-            var userResponseDtoList = userPaginationRepertory.findAllByUsernameStartingWithOrEmailStartingWithOrFullNameStartingWith(key,key,key, PageRequest.of(0, 10))
-                     .stream().filter(User::isInfluencer)
-                    .map(user -> modelMapper.map(user, UserResponseDto.class)).collect(toList());
-            return getSuccessResponseList(HttpStatus.OK,"influencer list",userResponseDtoList,userResponseDtoList.size());
-
-
-    }
 
 
 

@@ -44,7 +44,7 @@
         <spring.boot.version>2.7.3</spring.boot.version>
         <freemarker.version>2.3.28</freemarker.version>
         <swagger.version>2.9.2</swagger.version>
-        <expiring.map.version>0.5.9</expiring.map.version>
+        <expiring.map.version>0.5.10</expiring.map.version>
 
         <!--Sonar / Code Coverage-->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>

@@ -277,19 +277,4 @@ public class AuthController {
                 .orElseThrow(() -> new UserRegistrationException(dto.getEmail(), "Missing user object in database"));
     }
 
-    @PostMapping("/sendReviewerInviteLink")
-    public ResponseEntity setInvitationLinkToReviewer(@Valid @RequestBody(required = true) InviteEmailDto dto) {
-
-        OnInvitationLinkEvent reviewerInvitationLinkEvent = new OnInvitationLinkEvent(dto.getEmail(), "reviewer");
-        applicationEventPublisher.publishEvent(reviewerInvitationLinkEvent);
-        return ResponseEntity.ok().body(new ApiResponse(true, "Invitation link send successfully "));
-    }
-
-    @PostMapping("/sendInfluencerInviteLink")
-    public ResponseEntity setInvitationLinkToInfluencer(@Valid @RequestBody(required = true) InviteEmailDto dto) {
-
-        OnInvitationLinkEvent reviewerInvitationLinkEvent = new OnInvitationLinkEvent(dto.getEmail(), "influencer");
-        applicationEventPublisher.publishEvent(reviewerInvitationLinkEvent);
-        return ResponseEntity.ok().body(new ApiResponse(true, "Invitation link send successfully "));
-    }
 }

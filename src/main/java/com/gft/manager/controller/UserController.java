@@ -140,18 +140,6 @@ public class UserController {
         return ResponseEntity.status((int) respon.getStatusCode()).body(respon);
     }
 
-    @PostMapping("/reviewers/reviewer/{searchKey}")
-    @Operation(description = "search by username or email or full name get response with detail")
-    public ResponseEntity findByReviewer(@PathVariable String searchKey){
-        if (searchKey.isEmpty() || searchKey == null) return ResponseEntity.badRequest().body("searchKey can not empty");
-        var respon = userService.findAllReviewersWithDetailsBySearchKey(searchKey);
-        return ResponseEntity.status((int) respon.getStatusCode()).body(respon);
-    }
-    @GetMapping("/influencers/{searchKey}")
-    @Operation(description = "search by username or email or full name")
-    public ResponseEntity findByIInfluencersName(@PathVariable String searchKey){
-        var respon = userService.finAllInfluencersByUserName(searchKey);
-        return ResponseEntity.status((int) respon.getStatusCode()).body(respon);
-    }
+
 
 }
