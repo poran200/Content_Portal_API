@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface GiftCardInvoiceRepository extends MongoRepository<GiftCardInvoice,String> {
 
-    List<GiftCardInvoice> findByUniqueInvoiceNoOrInvoiceNo(String uniqInvoiceNo, String invoiceNo);
+    List<GiftCardInvoice> findByInvoiceNo(String uniqInvoiceNo);
 
     Page<GiftCardInvoice> findAllByCampaignId(String id, Pageable pageable);
     Page<GiftCardInvoice> findAllByStatus(GiftCardStatus status,Pageable pageable);

@@ -19,7 +19,7 @@ public class GiftCardInvoiceController {
 
     @PostMapping
     public ResponseEntity<List<GiftCardInvoiceDto>> searchByInvoiceId(@RequestBody CardSearchReq req){
-        return ResponseEntity.ok(giftCardService.getByInvoiceOrUniqueId(req.getInvoiceId(),req.getUniqInvoiceId()));
+        return ResponseEntity.ok(giftCardService.getByInvoiceOrUniqueId(req.getInvoiceId()));
     }
 
     @GetMapping

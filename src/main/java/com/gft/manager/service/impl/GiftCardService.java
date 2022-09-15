@@ -1,7 +1,6 @@
 package com.gft.manager.service.impl;
 
 import com.gft.manager.dto.GiftCardInvoiceDto;
-import com.gft.manager.model.gft.GiftCardInvoice;
 import com.gft.manager.model.gft.GiftCardStatus;
 import com.gft.manager.repository.GiftCardInvoiceRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +17,8 @@ public class GiftCardService {
     private final GiftCardInvoiceRepository invoiceRepository;
     private final ModelMapper mapper;
 
-    public List<GiftCardInvoiceDto> getByInvoiceOrUniqueId(String invoiceId, String uniqueId){
-       return invoiceRepository.findByUniqueInvoiceNoOrInvoiceNo(invoiceId,uniqueId)
+    public List<GiftCardInvoiceDto> getByInvoiceOrUniqueId(String invoiceId){
+       return invoiceRepository.findByInvoiceNo(invoiceId)
                 .stream().map( giftCardInvoice -> mapper.map(giftCardInvoice, GiftCardInvoiceDto.class))
                 .toList();
     }
