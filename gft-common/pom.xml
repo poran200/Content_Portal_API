@@ -5,15 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.gft</groupId>
-    <artifactId>gft-manager</artifactId>
+    <artifactId>gft-common</artifactId>
     <version>1.0</version>
-  <modules>
-      <module>data-import</module>
-      <module>notification-service</module>
-      <module>gft-common</module>
-      <module>redem-service</module>
-  </modules>
-    <packaging>pom</packaging>
+
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
